@@ -122,7 +122,6 @@ int main(void) {
     imprime(vert);
 
     liberaMemoria(vert);
-
     fclose(arquivo);
     printf("\nFechando arquivo..");
     return 0;
