@@ -38,11 +38,19 @@ void organiza(bool ehDirecional, int entradaAtual, int saidaAtual, int peso, gra
 void imprime(grafo *vert){
     grafo *suc;
     vert = vert -> proximo;
+    int flag = 0;
+    if(vert -> peso != 0)
+        flag = 1;
     while(vert != NULL){
         printf("\nvertice:%d\n",vert -> vert);
+        if(flag == 1)
+            printf("peso:%d\n",vert -> peso);
         suc = vert -> sucessor;
         while(suc != NULL){
-            printf("sucessor:%d\t",suc -> vert);
+            printf("\tsucessor:%d",suc -> vert);
+            if(flag == 1)
+                printf("peso:%d",suc -> peso);
+            
             suc = suc->sucessor;
         }
         vert = vert -> proximo;
