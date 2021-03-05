@@ -13,7 +13,7 @@ typedef struct grafo {
     struct grafo *proximo, *sucessor;
 } grafo;
 
-void organiza(bool ehDirecional, int entradaAtual, int saidaAtual, int peso, grafo *vert){
+void organiza(int entradaAtual, int saidaAtual, int peso, grafo *vert){
     while(vert -> vert != entradaAtual){
         if(vert -> proximo != NULL)
             vert = vert -> proximo;
@@ -118,12 +118,16 @@ int main(void) {
     if(possuiPeso){
         while (!feof (arquivo)){
             fscanf(arquivo, "(%d,%d,%d),", &entrada, &saida, &peso);
-            organiza(ehDirecional, entrada, saida, peso, vert);
+            organiza(entrada, saida, peso, vert);
+            if(ehDirecional == false)
+                organiza(saida, entrada, peso, vert);
         }
     } else {
         while (!feof (arquivo)){
             fscanf(arquivo, "(%d,%d),", &entrada, &saida);
-            organiza(ehDirecional, entrada, saida, peso, vert);
+            organiza(entrada, saida, peso, vert);
+            if(ehDirecional == false)
+                organiza(saida, entrada, peso, vert);
         }
     }
 
