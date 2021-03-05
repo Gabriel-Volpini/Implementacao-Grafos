@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-#include <stdbool.h> 
+#include <stdbool.h>
 #include <string.h>
 
 #define CAMINHO_ARQUIVO "data.txt"
@@ -50,7 +50,7 @@ void imprime(grafo *vert){
             printf("\tsucessor:%d",suc -> vert);
             if(flag == 1)
                 printf("peso:%d",suc -> peso);
-            
+
             suc = suc->sucessor;
         }
         vert = vert -> proximo;
@@ -59,7 +59,7 @@ void imprime(grafo *vert){
 
 bool menuGetPeso () {
     int resposta;
-    printf("O arquivo de texto possui peso?\n1- Sim\n2- Nao\n"); 
+    printf("O arquivo de texto possui peso?\n1- Sim\n2- Nao\n");
     scanf("%d", &resposta);
 
     if(resposta == 1) return true;
@@ -105,7 +105,7 @@ int main(void) {
     vert -> proximo = NULL;
     vert -> sucessor = NULL;
     vert -> peso = 0;
-    
+
     char initialChar;
     fscanf(arquivo, " %c", &initialChar);
     rewind(arquivo); //resetando cursor dentro do arquivo
@@ -114,17 +114,23 @@ int main(void) {
     else ehDirecional = false;
 
     bool possuiPeso = menuGetPeso();
-            
+
     if(possuiPeso){
         while (!feof (arquivo)){
-            fscanf(arquivo, "(%d,%d,%d),", &entrada, &saida, &peso);
+            if(ehDirecional == false)
+                fscanf(arquivo, "(%d,%d,%d),", &entrada, &saida, &peso);
+            else
+                fscanf(arquivo, "{%d,%d,%d},", &entrada, &saida, &peso);
             organiza(entrada, saida, peso, vert);
             if(ehDirecional == false)
                 organiza(saida, entrada, peso, vert);
         }
     } else {
         while (!feof (arquivo)){
-            fscanf(arquivo, "(%d,%d),", &entrada, &saida);
+            if(ehDirecional == false)
+                fscanf(arquivo, "(%d,%d),", &entrada, &saida, &peso);
+            else
+                fscanf(arquivo, "{%d,%d},", &entrada, &saida, &peso);
             organiza(entrada, saida, peso, vert);
             if(ehDirecional == false)
                 organiza(saida, entrada, peso, vert);
