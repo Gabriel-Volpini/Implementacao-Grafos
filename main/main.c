@@ -4,7 +4,11 @@
 #include <stdbool.h> 
 #include <string.h>
 
-#define CAMINHO_ARQUIVO "data.txt"
+// #define CAMINHO_ARQUIVO "direcionado.txt"
+#define CAMINHO_ARQUIVO "naoDirecionado.txt"
+// #define CAMINHO_ARQUIVO "ponderadoDirecionado.txt"
+// #define CAMINHO_ARQUIVO "ponderadoNaoDirecionado.txt"
+
 //padrão  (entrada,saida) ou (entrada,saida,peso)
 
 typedef struct grafo {
@@ -22,7 +26,8 @@ void organiza(bool ehDirecional, int entradaAtual, int saidaAtual, int peso, gra
             vert -> proximo -> vert = entradaAtual;
             vert -> proximo -> proximo = NULL;
             vert -> proximo -> sucessor = NULL;
-            vert -> proximo -> peso = peso;
+            if(peso)
+                vert -> proximo -> peso = peso;
         }
     }
     while(vert -> sucessor != NULL)
@@ -31,7 +36,8 @@ void organiza(bool ehDirecional, int entradaAtual, int saidaAtual, int peso, gra
     vert -> sucessor -> vert = saidaAtual;
     vert -> sucessor -> proximo = NULL;
     vert -> sucessor -> sucessor = NULL;
-    vert -> sucessor -> peso = peso;
+    if(peso)
+        vert -> sucessor -> peso = peso;
 
 }
 
@@ -109,12 +115,12 @@ int main(void) {
             
     if(possuiPeso){
         while (!feof (arquivo)){
-            fscanf(arquivo, "(%d,%d,%d),", &entrada, &saida, &peso);
+            fscanf(arquivo, ehDirecional ? "{%d,%d,%d}," : "(%d,%d,%d),", &entrada, &saida, &peso);
             organiza(ehDirecional, entrada, saida, peso, vert);
         }
     } else {
         while (!feof (arquivo)){
-            fscanf(arquivo, "(%d,%d),", &entrada, &saida);
+            fscanf(arquivo, ehDirecional ? "{%d,%d},": "(%d,%d),", &entrada, &saida);
             organiza(ehDirecional, entrada, saida, peso, vert);
         }
     }
