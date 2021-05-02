@@ -54,10 +54,16 @@ void imprime(grafo *vert, bool possuiPeso){
         suc = vert -> sucessor;
 
         while(suc != NULL){
+<<<<<<< HEAD
             printf("\nSucessor:%d",suc -> vert);
 
             if(possuiPeso)
                 printf("\tPeso:%d",suc -> peso);
+=======
+            printf("\tsucessor:%d",suc -> vert);
+            if(flag == 1)
+                printf(" peso:%d",suc -> peso);
+>>>>>>> 520d0c9d4613b6f1702b04a07ba06479ef9462b1
 
             suc = suc->sucessor;
         }
@@ -142,7 +148,7 @@ int main(void) {
     fscanf(arquivo, " %c", &initialChar);
     rewind(arquivo); //resetando cursor dentro do arquivo
 
-    if(initialChar == '{') ehDirecional = true;
+    if(initialChar == '(') ehDirecional = true;
     else ehDirecional = false;
 
     
@@ -150,9 +156,9 @@ int main(void) {
     int chegouNoFimDoArquivo = 0;
 
     if(possuiPeso){
-        while (1){
-            if(ehDirecional == false)
-                chegouNoFimDoArquivo = fscanf(arquivo, "(%d,%d,%d),", &entrada, &saida, &peso);
+        while (1){ 
+            if(ehDirecional == true)
+                fscanf(arquivo, "(%d,%d,%d),", &entrada, &saida, &peso);
             else
                 chegouNoFimDoArquivo = fscanf(arquivo, "{%d,%d,%d},", &entrada, &saida, &peso);
             
@@ -165,9 +171,8 @@ int main(void) {
         }
     } else {
         while (1){
-            if(ehDirecional == false)
-              chegouNoFimDoArquivo = fscanf(arquivo, "(%d,%d),", &entrada, &saida, &peso);
-
+            if(ehDirecional == true)
+                fscanf(arquivo, "(%d,%d),", &entrada, &saida, &peso);
             else
                chegouNoFimDoArquivo = fscanf(arquivo, "{%d,%d},", &entrada, &saida, &peso);
             
