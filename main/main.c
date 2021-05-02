@@ -54,16 +54,10 @@ void imprime(grafo *vert, bool possuiPeso){
         suc = vert -> sucessor;
 
         while(suc != NULL){
-<<<<<<< HEAD
             printf("\nSucessor:%d",suc -> vert);
 
             if(possuiPeso)
                 printf("\tPeso:%d",suc -> peso);
-=======
-            printf("\tsucessor:%d",suc -> vert);
-            if(flag == 1)
-                printf(" peso:%d",suc -> peso);
->>>>>>> 520d0c9d4613b6f1702b04a07ba06479ef9462b1
 
             suc = suc->sucessor;
         }
@@ -99,7 +93,7 @@ void menuGetFile (bool *possuiPeso, char *caminhoArquivo) {
         printf("Valor invalido, tente novamente\n\n");
         menuGetFile(possuiPeso, caminhoArquivo);
     }
-    
+     
     return;
 }
 
