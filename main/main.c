@@ -92,7 +92,7 @@ void caminha(grafo *vert){
       vert = vert -> proximo;
     }
 
-    imprime(caminho);
+    imprime(caminho, true);
     liberaMemoria(caminho);
 }
 
