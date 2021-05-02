@@ -4,10 +4,10 @@
 #include <stdbool.h>
 #include <string.h>
 
-// #define CAMINHO_ARQUIVO "direcionado.txt"
-#define CAMINHO_ARQUIVO "naoDirecionado.txt"
-// #define CAMINHO_ARQUIVO "ponderadoDirecionado.txt"
-// #define CAMINHO_ARQUIVO "ponderadoNaoDirecionado.txt"
+#define DIRECIONADO "direcionado.txt"
+#define NAO_DIRECIONADO "naoDirecionado.txt"
+#define PONDERADO_DIRECIONADO "ponderadoDirecionado.txt"
+#define PONDERADO_NAO_DIRECIONADO "ponderadoNaoDirecionado.txt"
 
 //padrão  (entrada,saida) ou (entrada,saida,peso)
 
@@ -41,39 +41,60 @@ void organiza(int entradaAtual, int saidaAtual, int peso, grafo *vert){
 
 }
 
-void imprime(grafo *vert){
+void imprime(grafo *vert, bool possuiPeso){
     grafo *suc;
     vert = vert -> proximo;
-    int flag = 0;
-    if(vert -> peso != 0)
-        flag = 1;
+
     while(vert != NULL){
-        printf("\nvertice:%d\n",vert -> vert);
-        if(flag == 1)
-            printf("peso:%d\n",vert -> peso);
+        printf("Vertice: %d",vert -> vert);
+        
+        if(possuiPeso)
+            printf("\tPeso:%d",vert -> peso);
+
         suc = vert -> sucessor;
+
         while(suc != NULL){
-            printf("\tsucessor:%d",suc -> vert);
-            if(flag == 1)
-                printf("peso:%d",suc -> peso);
+            printf("\nSucessor:%d",suc -> vert);
+
+            if(possuiPeso)
+                printf("\tPeso:%d",suc -> peso);
 
             suc = suc->sucessor;
         }
+        printf("\n\n");
         vert = vert -> proximo;
     }
 }
 
-bool menuGetPeso () {
+void menuGetFile (bool *possuiPeso, char *caminhoArquivo) {
     int resposta;
-    printf("O arquivo de texto possui peso?\n1- Sim\n2- Nao\n");
+    printf("Escolha o modelo de entrada:\n1 - Direcionado\n2 - Nao direcionado\n3 - Ponderado direcionado\n4 - Ponderado nao direcionado\n");
     scanf("%d", &resposta);
 
-    if(resposta == 1) return true;
-    else if(resposta == 2) return false;
-    else {
+    switch (resposta)
+    {
+    case 1:
+        *possuiPeso = false;
+        strcpy(caminhoArquivo, DIRECIONADO);
+        break;
+    case 2:
+        *possuiPeso = false;
+        strcpy(caminhoArquivo, NAO_DIRECIONADO);
+        break;
+    case 3:
+        *possuiPeso = true;
+        strcpy(caminhoArquivo, PONDERADO_DIRECIONADO);
+        break;
+    case 4:
+        *possuiPeso = true;
+        strcpy(caminhoArquivo, PONDERADO_NAO_DIRECIONADO);
+        break;
+    default:
         printf("Valor invalido, tente novamente\n\n");
-        return menuGetPeso();
+        menuGetFile(possuiPeso, caminhoArquivo);
     }
+    
+    return;
 }
 
 void liberaMemoria (grafo *vert) {
@@ -99,8 +120,13 @@ void liberaMemoria (grafo *vert) {
 }
 
 int main(void) {
-    FILE *arquivo = fopen(CAMINHO_ARQUIVO, "r" );
-    if( !arquivo ) perror(CAMINHO_ARQUIVO), exit(1);
+    bool possuiPeso = false;
+    char caminhoArquivo[30] = "";
+
+    menuGetFile(&possuiPeso, caminhoArquivo);
+
+    FILE *arquivo = fopen(caminhoArquivo, "r" );
+    if( !arquivo ) perror(caminhoArquivo), exit(1);
 
     int entrada = 0, saida = 0, peso = 0;
     bool ehDirecional;
@@ -119,31 +145,42 @@ int main(void) {
     if(initialChar == '{') ehDirecional = true;
     else ehDirecional = false;
 
-    bool possuiPeso = menuGetPeso();
+    
+
+    int chegouNoFimDoArquivo = 0;
 
     if(possuiPeso){
-        while (!feof (arquivo)){
+        while (1){
             if(ehDirecional == false)
-                fscanf(arquivo, "(%d,%d,%d),", &entrada, &saida, &peso);
+                chegouNoFimDoArquivo = fscanf(arquivo, "(%d,%d,%d),", &entrada, &saida, &peso);
             else
-                fscanf(arquivo, "{%d,%d,%d},", &entrada, &saida, &peso);
+                chegouNoFimDoArquivo = fscanf(arquivo, "{%d,%d,%d},", &entrada, &saida, &peso);
+            
+            if(chegouNoFimDoArquivo == EOF) break;
+
             organiza(entrada, saida, peso, vert);
+
             if(ehDirecional == false)
                 organiza(saida, entrada, peso, vert);
         }
     } else {
-        while (!feof (arquivo)){
+        while (1){
             if(ehDirecional == false)
-                fscanf(arquivo, "(%d,%d),", &entrada, &saida, &peso);
+              chegouNoFimDoArquivo = fscanf(arquivo, "(%d,%d),", &entrada, &saida, &peso);
+
             else
-                fscanf(arquivo, "{%d,%d},", &entrada, &saida, &peso);
+               chegouNoFimDoArquivo = fscanf(arquivo, "{%d,%d},", &entrada, &saida, &peso);
+            
+            if(chegouNoFimDoArquivo == EOF) break;
+
             organiza(entrada, saida, peso, vert);
+
             if(ehDirecional == false)
                 organiza(saida, entrada, peso, vert);
         }
     }
 
-    imprime(vert);
+    imprime(vert, possuiPeso);
 
     liberaMemoria(vert);
     fclose(arquivo);
