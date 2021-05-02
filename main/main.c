@@ -66,6 +66,36 @@ void imprime(grafo *vert, bool possuiPeso){
     }
 }
 
+void caminha(grafo *vert){
+    grafo *caminho;
+    caminho = malloc(sizeof(grafo));
+    caminho -> vert = ' ';
+    caminho -> proximo = NULL;
+    caminho -> sucessor = NULL;
+    caminho -> peso = 0;
+
+    vert = vert -> proximo;
+
+    grafo *proxCaminho;
+    grafo *suc;
+    while(vert != NULL){
+      suc = vert -> sucessor;
+      proxCaminho = suc;
+
+        while(suc != NULL){
+            if(suc -> peso < proxCaminho -> peso && suc -> vert == proxCaminho -> vert){
+                proxCaminho = suc;
+            }
+            suc = suc->sucessor;
+        }
+      organiza(vert->vert,proxCaminho->vert,proxCaminho->peso,caminho);
+      vert = vert -> proximo;
+    }
+
+    imprime(caminho);
+    liberaMemoria(caminho);
+}
+
 void menuGetFile (bool *possuiPeso, bool *ehDirecional, char *caminhoArquivo) {
     int resposta;
     printf("Escolha o modelo de entrada:\n1 - Direcionado\n2 - Nao direcionado\n3 - Ponderado direcionado\n4 - Ponderado nao direcionado\n");
