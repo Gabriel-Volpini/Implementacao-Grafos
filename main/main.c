@@ -66,7 +66,7 @@ void imprime(grafo *vert, bool possuiPeso){
     }
 }
 
-void menuGetFile (bool *possuiPeso, char *caminhoArquivo) {
+void menuGetFile (bool *possuiPeso, bool *ehDirecional, char *caminhoArquivo) {
     int resposta;
     printf("Escolha o modelo de entrada:\n1 - Direcionado\n2 - Nao direcionado\n3 - Ponderado direcionado\n4 - Ponderado nao direcionado\n");
     scanf("%d", &resposta);
@@ -75,23 +75,27 @@ void menuGetFile (bool *possuiPeso, char *caminhoArquivo) {
     {
     case 1:
         *possuiPeso = false;
+        *ehDirecional = true;
         strcpy(caminhoArquivo, DIRECIONADO);
         break;
     case 2:
         *possuiPeso = false;
+        *ehDirecional = false;
         strcpy(caminhoArquivo, NAO_DIRECIONADO);
         break;
     case 3:
         *possuiPeso = true;
+        *ehDirecional = true;
         strcpy(caminhoArquivo, PONDERADO_DIRECIONADO);
         break;
     case 4:
         *possuiPeso = true;
+        *ehDirecional = false;
         strcpy(caminhoArquivo, PONDERADO_NAO_DIRECIONADO);
         break;
     default:
         printf("Valor invalido, tente novamente\n\n");
-        menuGetFile(possuiPeso, caminhoArquivo);
+        menuGetFile(possuiPeso, ehDirecional, caminhoArquivo);
     }
      
     return;
@@ -122,14 +126,14 @@ void liberaMemoria (grafo *vert) {
 int main(void) {
     bool possuiPeso = false;
     char caminhoArquivo[30] = "";
+    bool ehDirecional;
 
-    menuGetFile(&possuiPeso, caminhoArquivo);
+    menuGetFile(&possuiPeso, &ehDirecional, caminhoArquivo);
 
     FILE *arquivo = fopen(caminhoArquivo, "r" );
     if( !arquivo ) perror(caminhoArquivo), exit(1);
 
     int entrada = 0, saida = 0, peso = 0;
-    bool ehDirecional;
 
     grafo *vert;
     vert = malloc(sizeof(grafo));
@@ -138,21 +142,12 @@ int main(void) {
     vert -> sucessor = NULL;
     vert -> peso = 0;
 
-    char initialChar;
-    fscanf(arquivo, " %c", &initialChar);
-    rewind(arquivo); //resetando cursor dentro do arquivo
-
-    if(initialChar == '(') ehDirecional = true;
-    else ehDirecional = false;
-
-    
-
     int chegouNoFimDoArquivo = 0;
 
     if(possuiPeso){
         while (1){ 
             if(ehDirecional == true)
-                fscanf(arquivo, "(%d,%d,%d),", &entrada, &saida, &peso);
+                chegouNoFimDoArquivo = fscanf(arquivo, "(%d,%d,%d),", &entrada, &saida, &peso);
             else
                 chegouNoFimDoArquivo = fscanf(arquivo, "{%d,%d,%d},", &entrada, &saida, &peso);
             
@@ -166,7 +161,7 @@ int main(void) {
     } else {
         while (1){
             if(ehDirecional == true)
-                fscanf(arquivo, "(%d,%d),", &entrada, &saida, &peso);
+                chegouNoFimDoArquivo = fscanf(arquivo, "(%d,%d),", &entrada, &saida, &peso);
             else
                chegouNoFimDoArquivo = fscanf(arquivo, "{%d,%d},", &entrada, &saida, &peso);
             
