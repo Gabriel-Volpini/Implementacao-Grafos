@@ -55,7 +55,7 @@ void imprime(grafo *vert){
         while(suc != NULL){
             printf("\tsucessor:%d",suc -> vert);
             if(flag == 1)
-                printf("peso:%d",suc -> peso);
+                printf(" peso:%d",suc -> peso);
 
             suc = suc->sucessor;
         }
@@ -116,14 +116,14 @@ int main(void) {
     fscanf(arquivo, " %c", &initialChar);
     rewind(arquivo); //resetando cursor dentro do arquivo
 
-    if(initialChar == '{') ehDirecional = true;
+    if(initialChar == '(') ehDirecional = true;
     else ehDirecional = false;
 
     bool possuiPeso = menuGetPeso();
 
     if(possuiPeso){
         while (!feof (arquivo)){
-            if(ehDirecional == false)
+            if(ehDirecional == true)
                 fscanf(arquivo, "(%d,%d,%d),", &entrada, &saida, &peso);
             else
                 fscanf(arquivo, "{%d,%d,%d},", &entrada, &saida, &peso);
@@ -133,7 +133,7 @@ int main(void) {
         }
     } else {
         while (!feof (arquivo)){
-            if(ehDirecional == false)
+            if(ehDirecional == true)
                 fscanf(arquivo, "(%d,%d),", &entrada, &saida, &peso);
             else
                 fscanf(arquivo, "{%d,%d},", &entrada, &saida, &peso);
